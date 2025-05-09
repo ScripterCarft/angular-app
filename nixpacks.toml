@@ -5,12 +5,6 @@
 [phases.setup]
   nixPkgs = ['...', 'jq']
 
-[phases.output]
-  dependsOn = ['setup']
-  cmds = [
-    'jq -r "[.projects[] | .architect.build.options.outputPath][0]" angular.json > angular_output_path'
-]
-
 [phases.caddy]
   dependsOn = ['setup']
   nixpkgsArchive = 'ba913eda2df8eb72147259189d55932012df6301'
@@ -21,4 +15,4 @@
   cmds = ['caddy fmt --overwrite Caddyfile']
 
 [start]
-  cmd = 'export ANGULAR_OUTPUT_PATH=$(cat angular_output_path); caddy run --config Caddyfile --adapter caddyfile 2>&1'
+cmd = 'export ANGULAR_OUTPUT_PATH=$(jq -r "[.projects[] | .architect.build.options.outputPath][0]" angular.json) && exec caddy run --config Caddyfile --adapter caddyfile 2>&1'
