@@ -1,0 +1,22 @@
+{
+  admin off
+  auto_https off
+  persist_config off
+  log {
+    format json
+  }
+  servers {
+    trusted_proxies static private_ranges 100.0.0.0/8
+	}
+}
+
+:{$PORT} {
+  log {
+    format json
+	}
+  rewrite /health /*
+  root * {$ANGULAR_OUTPUT_PATH}
+  encode gzip
+  file_server
+  try_files {path} /index.html
+}
